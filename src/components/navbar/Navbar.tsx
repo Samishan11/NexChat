@@ -22,7 +22,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full dark:bg-[#36404A] bg-white md:bg-none z-[99] fixed -bottom-1 md:bottom-0 left-0 md:relative md:w-[100px] flex flex-row md:flex-col items-start justify-center md:justify-start md:items-center shadow-md h-16 md:h-screen">
+    <div className="w-full dark:bg-neutral-950/10 bg-neutral-200 md:bg-none z-[99] fixed -bottom-1 md:bottom-0 left-0 md:relative md:w-[100px] flex flex-row md:flex-col items-start justify-center md:justify-start md:items-center shadow-md h-16 md:h-screen">
       <img
         className="mt-[21px] md:block hidden"
         src={Logo}
@@ -40,15 +40,15 @@ const Navbar = () => {
                       onClick={() => setCurrent(data.name)}
                       className={`${
                         current === data.name &&
-                        "bg-indigo-100/60   [&_.text-neutral-500]:text-indigo-500"
-                      } dark:hover:text-indigo-200 hover:bg-indigo-100/60 py-6 !rounded-lg `}
+                        "dark:bg-neutral-600/60 bg-neutral-300 dark:text-indigo-500"
+                      } dark:hover:text-indigo-200 hover:bg-neutral-300 hover:dark:bg-neutral-700/60 py-4 rounded-[6px]`}
                       variant="ghost"
                     >
                       {data.icon}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="bg-black text-white p-1 rounded-md">
+                    <p className="text-white p-1 rounded-md">
                       {data.name}
                     </p>
                   </TooltipContent>

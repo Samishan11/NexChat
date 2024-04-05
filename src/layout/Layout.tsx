@@ -7,6 +7,7 @@ import ChatLayout from "./ChatLayout";
 import ChatLogo from "@/assets/chat.svg";
 import Inbox from "@/components/inbox/Inbox";
 import { useLayoutState } from "@/state/layout.state";
+import { FaComment } from "react-icons/fa6";
 const Layout = () => {
   const { current } = useNavbarState();
   const { open } = useLayoutState();
@@ -21,16 +22,16 @@ const Layout = () => {
       <ChatLayout>
         {open && <Inbox />}
         {!open && (
-          <div className="h-full flex w-full flex-col gap-5 justify-center items-center ">
-            <div className="h-[120px] w-[120px] flex  justify-center items-center rounded-full bg-neutral-500/70">
+          <div className="h-full flex w-full flex-col gap-5 justify-center items-center">
+            <div className="h-[120px] w-[120px] flex  justify-center items-center rounded-full bg-neutral-800/70">
               <img src={ChatLogo} alt="" />
+              {/* <FaComment className="text-4xl" /> */}
             </div>
-            <p
-              style={{ borderRadius: "20px" }}
-              className="px-4 text-xl font-semibold py-2 text-white bg-neutral-500/70"
+            <div
+              className="px-6 text-lg font-medium py-2 rounded text-neutral-100 bg-neutral-700/20"
             >
               Start Conversation
-            </p>
+            </div>
           </div>
         )}
       </ChatLayout>

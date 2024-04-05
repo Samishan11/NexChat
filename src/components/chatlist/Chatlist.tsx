@@ -10,16 +10,16 @@ interface IProp {
 }
 const ChatList = ({ title }: IProp) => {
   return (
-    <div className=" max-h-screen dark:text-neutral-100 overflow-hidden">
+    <div className="max-h-screen dark:text-neutral-100 overflow-hidden dark:bg-neutral-900 bg-neutral-200 border-r-2 dark:border-neutral-950 border-neutral-300 shadow">
       <div className="px-[26px]">
         <div className="mt-[21px] flex flex-col gap-4 items-start justify-between">
-          <h1 className=" text-[21px] font-semibold">{title}</h1>
-          <Input
-            className="h-[40px] dark:bg-[#36404A]"
+          <h1 className="text-[21px] font-semibold">{title}</h1>
+          <Input 
+            className="h-11"
             icon={
               <FiSearch
                 size={22}
-                className="text-neutral-500/80 dark:bg-[#36404A]"
+                className="text-neutral-200"
               />
             }
             placeholder="Search"
@@ -30,7 +30,7 @@ const ChatList = ({ title }: IProp) => {
             {Array.from({ length: 20 }).map((_, ind) => {
               return (
                 <SwiperSlide key={ind}>
-                  <span className="invisible">asd</span>
+                  <span className="invisible">sami</span>
                   <UserAvatar />
                 </SwiperSlide>
               );
@@ -54,10 +54,10 @@ const UserAvatar = () => {
   return (
     <div
       style={{ borderRadius: "8px" }}
-      className=" dark:bg-[#36404A] bg-neutral-300/40 cursor-pointer rounded-sm w-[68px] h-[51.6px] flex justify-center items-center relative"
+      className=" dark:bg-neutral-700 bg-neutral-200 cursor-pointer rounded-md w-[68px] h-[51.6px] flex justify-center items-center relative"
     >
       <img
-        src="https://github.com/shadcn.png"
+        src="https://cdn.pixabay.com/photo/2022/07/24/23/46/artificial-intelligence-7342613_1280.jpg"
         className="w-[35.2px] h-[35.2px] rounded-full absolute -top-5"
         alt=""
       />
@@ -77,21 +77,21 @@ const UserList = ({ ind }: { ind: number }) => {
     <div
       onClick={() => setOpen(true)}
       style={{ borderRadius: "6px" }}
-      className={`hover:dark:bg-[#36404A] hover:  mb-1 h-16 flex px-4 pt-2 items-start justify-between cursor-pointer ${
-        ind === 0 && "dark:bg-[#36404A] bg-neutral-300/40"
+      className={`hover:dark:bg-neutral-800 mb-1 h-16 flex px-4 pt-2 items-start justify-between cursor-pointer ${
+        ind === 0 && "dark:bg-neutral-800 bg-neutral-200/40"
       }`}
     >
       <div className="flex justify-between items-center gap-4">
         <img
-          src="https://github.com/shadcn.png"
-          className="w-[35px] h-[35px] !z-50 rounded-full -top-5"
+          src="https://source.unsplash.com/random?men"
+          className="w-[35px] h-[35px] !z-50 rounded-full -top-5 object-cover"
           alt=""
         />
         <div>
           <p className="font-medium text-[15px] dark:text-neutral-100 text-neutral-800">
             Patrick Hendrick
           </p>
-          <span className="text-neutral-500 dark:text-neutral-400 text-sm">
+          <span className="text-neutral-400 dark:text-neutral-500 text-sm">
             Hey I am available
           </span>
         </div>
@@ -100,7 +100,7 @@ const UserList = ({ ind }: { ind: number }) => {
         <span className="text-neutral-500 dark:text-neutral-400">05 min</span>
         <span
           style={{ borderRadius: "20px" }}
-          className="bg-red-200 mt-1 max-w-6 text-red-600 w-auto block px-1"
+          className="bg-indigo-200 mt-1 max-w-6 text-neutral-600 w-auto flex items-center justify-center px-2"
         >
           02
         </span>

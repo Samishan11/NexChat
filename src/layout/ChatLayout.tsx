@@ -23,7 +23,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
           transition: { type: "tween", duration: 0.3 },
         }}
         transition={{ type: "tween", duration: 0.3 }}
-        className="z-[999] bg-indigo-50/30 w-full fixed left-0 top-0 h-screen md:relative dark:bg-[#303841]"
+        className="z-[999] bg-neutral-100 w-full fixed left-0 top-0 h-screen md:relative dark:bg-neutral-900"
       >
         {children}
       </motion.div>

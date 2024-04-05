@@ -25,7 +25,7 @@ const Profile = ({ title }: IProp) => {
         <div className="flex mt-2 flex-col items-center mb-6">
           <img
             className="w-20 my-6 rounded-full"
-            src="https://github.com/shadcn.png"
+            src="https://cdn.pixabay.com/photo/2022/07/24/23/46/artificial-intelligence-7342613_1280.jpg"
             alt=""
           />
           <span className="font-medium">admin</span>
