@@ -9,3 +9,66 @@ export const ICONS = [
   { icon: <CiVideoOn size={20} className="text-neutral-500" /> },
   { icon: <HiOutlineDotsHorizontal size={20} className="text-neutral-500" /> },
 ];
+
+export const MESSAGES = [
+  {
+    sender: {
+      name: "Patrick Hendricks",
+      avatar: "https://github.com/shadcn.png",
+      message: "Good morning, How are you? What about our next meeting?",
+    },
+    receiver: {
+      name: "Harry Potter Hendricks",
+      avatar: "https://github.com/shadcn.png",
+      message: "Good morning,",
+    },
+  },
+  {
+    sender: {
+      name: "Patrick Hendricks",
+      avatar: "https://github.com/shadcn.png",
+      message: "Good morning, How are you? What about our next meeting?",
+    },
+    receiver: {
+      name: "Harry Potter Hendricks",
+      avatar: "https://github.com/shadcn.png",
+      message: "Good morning,",
+    },
+  },
+  {
+    sender: {
+      name: "Patrick Hendricks",
+      avatar: "https://github.com/shadcn.png",
+      message: "Good morning, How are you? What about our next meeting?",
+    },
+    receiver: {
+      name: "Harry Potter Hendricks",
+      avatar: "https://github.com/shadcn.png",
+      message: "Good morning,",
+    },
+  },
+  {
+    sender: {
+      name: "Patrick Hendricks",
+      avatar: "https://github.com/shadcn.png",
+      message: "Good morning, How are you? What about our next meeting?",
+    },
+    receiver: {
+      name: "Harry Potter Hendricks",
+      avatar: "https://github.com/shadcn.png",
+      message: "Good morning,",
+    },
+  },
+  {
+    sender: {
+      name: "Patrick Hendricks",
+      avatar: "https://github.com/shadcn.png",
+      message: "Good morning, How are you? What about our next meeting?",
+    },
+    receiver: {
+      name: "Harry Potter Hendricks",
+      avatar: "https://github.com/shadcn.png",
+      message: "Good morning,",
+    },
+  },
+];

@@ -48,7 +48,7 @@ const Body = () => {
       {Array.from({ length: 20 }).map((_, ind) => (
         <div key={ind}>
           <div className="flex mb-6 items-end  gap-4 relative z-50">
-            <div className="flex flex-col px-4 py-2 rounded-t-[8px] rounded-bl-[8px] rounded-br-[4px] bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 max-w-[45%] relative">
+            <div className="flex flex-col px-4 py-2 rounded-t-[8px] rounded-bl-[8px] rounded-br-[4px] bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 max-w-[65%] md:max-w-[45%] relative">
               <span>
                 Good morning, How are you? What about our next meeting?
               </span>
@@ -70,7 +70,7 @@ const Body = () => {
           <div className="flex flex-row-reverse mb-6 items-end gap-4 relative z-50">
             <div
               style={{ borderRadius: "8px" }}
-              className="flex flex-col px-4 py-2 rounded-t-[8px] rounded-bl-[4px] rounded-br-[8px] bg-indigo-500 text-white max-w-[45%] relative"
+              className="flex flex-col px-4 py-2 rounded-t-[8px] rounded-bl-[4px] rounded-br-[8px] bg-indigo-500 text-white max-w-[65%] md:max-w-[45%] relative"
             >
               <span>Good morning, </span>
               <span className="text-neutral-300 text-sm">10:02</span>

@@ -7,6 +7,9 @@ import ChatLayout from "./ChatLayout";
 import ChatLogo from "@/assets/chat.svg";
 import Inbox from "@/components/inbox/Inbox";
 import { useLayoutState } from "@/state/layout.state";
+import Contact from "@/components/contact/Contact";
+import Setting from "@/components/setting/Setting";
+import FriendList from "@/components/friend/FriendList";
 const Layout = () => {
   const { current } = useNavbarState();
   const { open } = useLayoutState();
@@ -17,6 +20,9 @@ const Layout = () => {
       <Content>
         {current === "Profile" && <Profile title={current} />}
         {current === "Chat" && <Chatlist title={current} />}
+        {current === "Contact" && <Contact title={current} />}
+        {current === "Setting" && <Setting title={current} />}
+        {current === "Friends" && <FriendList title={"Friend Requests "} />}
       </Content>
       <ChatLayout>
         {open && <Inbox />}

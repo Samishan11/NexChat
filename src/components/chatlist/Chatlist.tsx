@@ -14,14 +14,9 @@ const ChatList = ({ title }: IProp) => {
       <div className="px-[26px]">
         <div className="mt-[21px] flex flex-col gap-4 items-start justify-between">
           <h1 className="text-[21px] font-semibold">{title}</h1>
-          <Input 
+          <Input
             className="h-11"
-            icon={
-              <FiSearch
-                size={22}
-                className="text-neutral-200"
-              />
-            }
+            icon={<FiSearch size={22} className="text-neutral-200" />}
             placeholder="Search"
           />
         </div>
@@ -77,8 +72,8 @@ const UserList = ({ ind }: { ind: number }) => {
     <div
       onClick={() => setOpen(true)}
       style={{ borderRadius: "6px" }}
-      className={`hover:dark:bg-neutral-800 mb-1 h-16 flex px-4 pt-2 items-start justify-between cursor-pointer ${
-        ind === 0 && "dark:bg-neutral-800 bg-neutral-200/40"
+      className={`hover:dark:bg-neutral-800 hover:bg-neutral-300 mb-1 h-16 flex px-4 pt-2 items-start justify-between cursor-pointer ${
+        ind === 0 && "dark:bg-neutral-800 bg-neutral-300"
       }`}
     >
       <div className="flex justify-between items-center gap-4">

@@ -7,9 +7,9 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   const { width } = useWindowSize();
   const { open } = useLayoutState();
   return (
-    <AnimatePresence>
+    <AnimatePresence key={"chat"}>
       <motion.div
-        initial={{ x: 0, opacity: 1 }}
+        initial={{ x: 0, opacity: 0 }}
         animate={
           open
             ? { x: 0, opacity: 1 }
@@ -20,9 +20,9 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
         exit={{
           x: "1000%",
           opacity: 0,
-          transition: { type: "tween", duration: 0.3 },
+          transition: { type: "tween", duration: 1 },
         }}
-        transition={{ type: "tween", duration: 0.3 }}
+        transition={{ duration: "1" }}
         className="z-[999] bg-neutral-100 w-full fixed left-0 top-0 h-screen md:relative dark:bg-neutral-900"
       >
         {children}

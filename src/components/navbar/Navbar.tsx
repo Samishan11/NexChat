@@ -22,7 +22,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full dark:bg-neutral-950/10 bg-neutral-200 md:bg-none z-[99] fixed -bottom-1 md:bottom-0 left-0 md:relative md:w-[100px] flex flex-row md:flex-col items-start justify-center md:justify-start md:items-center shadow-md h-16 md:h-screen">
+    <div className="w-full dark:bg-neutral-800 md:dark:bg-neutral-950/10 bg-neutral-200 md:bg-none z-[99] fixed -bottom-1 md:bottom-0 left-0 md:relative md:w-[100px] flex flex-row md:flex-col items-start justify-center md:justify-start md:items-center shadow-md h-16 md:h-screen">
       <img
         className="mt-[21px] md:block hidden"
         src={Logo}
@@ -48,7 +48,7 @@ const Navbar = () => {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="text-white p-1 rounded-md">
+                    <p className="text-white dark:text-black dark:bg-white bg-black p-1 rounded-md">
                       {data.name}
                     </p>
                   </TooltipContent>
@@ -87,7 +87,7 @@ const Navbar = () => {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p className="bg-black text-white p-1 rounded-md">
+              <p className=" bg-black text-white p-1 rounded-md">
                 {theme === "dark" ? "Dark Mode" : "Light Mode"}
               </p>
             </TooltipContent>
