@@ -1,7 +1,5 @@
 import { ICONS } from "@/constrants/chat.constrants";
-import { FaDotCircle } from "react-icons/fa";
-import { Input } from "../ui/input";
-import { FaEnvelope, FaFile, FaPaperPlane } from "react-icons/fa6";
+import { FaFile, FaPaperPlane } from "react-icons/fa6";
 import { Button } from "../ui/button";
 import { HiOutlineEmojiHappy } from "react-icons/hi";
 import { MdArrowBackIos } from "react-icons/md";
@@ -48,13 +46,15 @@ const Body = () => {
   return (
     <div className="max-h-[calc(100vh-180px)] min-h-[calc(100vh-180px)] p-6 overflow-y-scroll">
       {Array.from({ length: 20 }).map((_, ind) => (
-        <div>
+        <div key={ind}>
           <div className="flex mb-6 items-end  gap-4 relative z-50">
-            <div
-              className="flex flex-col px-4 py-2 rounded-t-[8px] rounded-bl-[8px] rounded-br-[4px] bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 max-w-[45%] relative"
-            >
-              <span>Good morning, How are you? What about our next meeting?</span>
-              <span className="text-neutral-400 dark:text-neutral-500 text-sm">10:02</span>
+            <div className="flex flex-col px-4 py-2 rounded-t-[8px] rounded-bl-[8px] rounded-br-[4px] bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 max-w-[45%] relative">
+              <span>
+                Good morning, How are you? What about our next meeting?
+              </span>
+              <span className="text-neutral-400 dark:text-neutral-500 text-sm">
+                10:02
+              </span>
               <div className="absolute -right-3 bottom-0">
                 <IoTriangle className="rotate-90 dark:text-neutral-700 text-neutral-200" />
               </div>
@@ -92,15 +92,17 @@ const Body = () => {
   );
 };
 
-
 const Footer = () => {
   return (
     <div className="h-24 w-full flex gap-6 items-center border-t dark:border-neutral-700 border-neutral-200 px-6 absolute bottom-0 right-0">
-      <input type="text" className="w-full h-12 text-base dark:text-neutral-200 text-neutral-700 bg-transparent border-b dark:border-neutral-600 border-neutral-300 outline-none focus:border-indigo-600 focus:border-b-2 placeholder:text-neutral-600" placeholder="Type a message..." />
+      <input
+        type="text"
+        className="w-full h-12 text-base dark:text-neutral-200 text-neutral-700 bg-transparent border-b dark:border-neutral-600 border-neutral-300 outline-none focus:border-indigo-600 focus:border-b-2 placeholder:text-neutral-600"
+        placeholder="Type a message..."
+      />
       <HiOutlineEmojiHappy className="text-neutral-500 text-2xl cursor-pointer" />
       <FaFile className="text-neutral-500 text-base cursor-pointer" />
-      <Button className="text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-[6px]"
-      >
+      <Button className="text-white bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded-[6px]">
         <FaPaperPlane />
       </Button>
     </div>
