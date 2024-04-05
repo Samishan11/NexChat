@@ -17,6 +17,9 @@ module.exports = {
       screens: {
         "2xl": "1400px",
       },
+      colors: {
+        dark: "#36404a",
+      },
     },
     extend: {
       colors: {

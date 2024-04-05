@@ -7,24 +7,47 @@ import { TbSettingsPause } from "react-icons/tb";
 export const NAVBARITEM = [
   {
     name: "Profile",
-    icon: <FaRegUser className="text-neutral-500" size={"24px"} />,
+    icon: (
+      <FaRegUser
+        className="text-neutral-500 dark:text-neutral-200"
+        size={"24px"}
+      />
+    ),
   },
   {
     name: "Chat",
     icon: (
-      <IoChatboxEllipsesOutline className="text-neutral-500" size={"24px"} />
+      <IoChatboxEllipsesOutline
+        className="text-neutral-500 dark:text-neutral-200"
+        size={"24px"}
+      />
     ),
   },
   {
     name: "Friends",
-    icon: <FiUsers className="text-neutral-500" size={"24px"} />,
+    icon: (
+      <FiUsers
+        className="text-neutral-500 dark:text-neutral-200"
+        size={"24px"}
+      />
+    ),
   },
   {
     name: "Contact",
-    icon: <RiContactsLine className="text-neutral-500" size={"24px"} />,
+    icon: (
+      <RiContactsLine
+        className="text-neutral-500 dark:text-neutral-200"
+        size={"24px"}
+      />
+    ),
   },
   {
     name: "Setting",
-    icon: <TbSettingsPause className="text-neutral-500" size={"24px"} />,
+    icon: (
+      <TbSettingsPause
+        className="text-neutral-500 dark:text-neutral-200"
+        size={"24px"}
+      />
+    ),
   },
 ];
