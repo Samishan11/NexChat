@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { FiSearch } from "react-icons/fi";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import SearchableInput from "../form/SearchableInput";
 
 interface IUser {
   id: number;
@@ -24,12 +23,9 @@ const Contact = ({ title }: IProp) => {
       <div className="px-[26px]">
         <div className="mt-[21px] flex flex-col gap-4 items-start justify-between">
           <h1 className="text-[21px] font-semibold">{title}</h1>
-          <Input
-            className="h-11"
-            icon={<FiSearch size={22} className="text-neutral-200" />}
-            placeholder="Search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+          <SearchableInput
+            searchTerm={searchTerm}
+            handleChange={setSearchTerm}
           />
         </div>
       </div>

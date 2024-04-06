@@ -9,7 +9,7 @@ export const NAVBARITEM = [
     name: "Profile",
     icon: (
       <FaRegUser
-        className="text-neutral-500 dark:text-neutral-200"
+        className="text-neutral-500 dark:text-neutral-200 "
         size={"24px"}
       />
     ),

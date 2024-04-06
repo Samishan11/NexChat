@@ -12,7 +12,7 @@ interface IProp {
 }
 const Profile = ({ title }: IProp) => {
   return (
-    <div className="w-full h-screen sm:h-auto dark:text-neutral-200">
+    <div className="w-full h-auto sm:h-auto dark:text-neutral-200">
       <div className="px-[26px]">
         <div className="mt-[21px] flex items-center justify-between">
           <h1 className=" text-[21px] font-semibold">My {title}</h1>

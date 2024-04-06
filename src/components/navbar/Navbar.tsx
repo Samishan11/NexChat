@@ -40,7 +40,7 @@ const Navbar = () => {
                       onClick={() => setCurrent(data.name)}
                       className={`${
                         current === data.name &&
-                        "dark:bg-neutral-600/60 bg-neutral-300 dark:text-indigo-500"
+                        "dark:bg-neutral-600/60 bg-neutral-300 "
                       } dark:hover:text-indigo-200 hover:bg-neutral-300 hover:dark:bg-neutral-700/60 py-4 rounded-[6px]`}
                       variant="ghost"
                     >

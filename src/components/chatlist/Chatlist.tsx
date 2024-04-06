@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { RiRadioButtonLine } from "react-icons/ri";
 import { useLayoutState } from "@/state/layout.state";
+import { USERS } from "@/constrants/data";
 
 interface IProp {
   title: string;
@@ -22,11 +23,11 @@ const ChatList = ({ title }: IProp) => {
         </div>
         <div className="mt-5 max-w-[400px] [&_.swiper-wrapper]:!w-[100px]">
           <Swiper spaceBetween={20} slidesPerView={4}>
-            {Array.from({ length: 20 }).map((_, ind) => {
+            {USERS.map((user) => {
               return (
-                <SwiperSlide key={ind}>
-                  <span className="invisible">sami</span>
-                  <UserAvatar />
+                <SwiperSlide key={user.name}>
+                  <span className="invisible">{user.id}</span>
+                  <UserAvatar user={user} />
                 </SwiperSlide>
               );
             })}
@@ -36,8 +37,8 @@ const ChatList = ({ title }: IProp) => {
       <div className="px-4 mt-6 ">
         <p className="font-medium mb-4">Recent</p>
         <div className="max-h-screen chat_list pb-[275px] overflow-y-scroll">
-          {Array.from({ length: 10 }).map((_, ind) => (
-            <UserList ind={ind} key={ind} />
+          {USERS.map((user, ind) => (
+            <UserList ind={ind} user={user} key={user.id} />
           ))}
         </div>
       </div>
@@ -45,27 +46,46 @@ const ChatList = ({ title }: IProp) => {
   );
 };
 
-const UserAvatar = () => {
+const UserAvatar = ({
+  user,
+}: {
+  user: (typeof USERS)[keyof (typeof USERS)[keyof typeof USERS]];
+}) => {
   return (
     <div
       style={{ borderRadius: "8px" }}
-      className=" dark:bg-neutral-700 bg-neutral-200 cursor-pointer rounded-md w-[68px] h-[51.6px] flex justify-center items-center relative"
+      className=" dark:bg-neutral-700 bg-neutral-300 cursor-pointer rounded-md w-[68px] h-[51.6px] flex justify-center items-center relative"
     >
-      <img
-        src="https://cdn.pixabay.com/photo/2022/07/24/23/46/artificial-intelligence-7342613_1280.jpg"
-        className="w-[35.2px] h-[35.2px] rounded-full absolute -top-5"
-        alt=""
-      />
+      {!user.img && (
+        <p className="w-[35px] font-medium absolute -top-5 bg-neutral-400/70 dark:bg-neutral-500/90 grid place-items-center	 h-[35px] rounded-full  object-cover">
+          {user.name.charAt(0).toUpperCase()}
+        </p>
+      )}
+      {user.img && (
+        <img
+          src={user.img}
+          className="w-[35px] h-[35px] absolute rounded-full -top-5 object-cover"
+          alt={user.name}
+        />
+      )}
       <RiRadioButtonLine
-        className="absolute top-[2px] left-10 text-green-500"
+        className="absolute top-[2px] left-[43px] text-green-500"
         size={12}
       />
-      <span className="font-medium text-[13px] mt-2">Patrick</span>
+      <span className="font-medium text-[13px] mt-2">
+        {user.name.split(" ")[0].toUpperCase()}
+      </span>
     </div>
   );
 };
 
-const UserList = ({ ind }: { ind: number }) => {
+const UserList = ({
+  ind,
+  user,
+}: {
+  ind: number;
+  user: (typeof USERS)[keyof (typeof USERS)[keyof typeof USERS]];
+}) => {
   const { setOpen } = useLayoutState();
 
   return (
@@ -77,14 +97,21 @@ const UserList = ({ ind }: { ind: number }) => {
       }`}
     >
       <div className="flex justify-between items-center gap-4">
-        <img
-          src="https://source.unsplash.com/random?men"
-          className="w-[35px] h-[35px] !z-50 rounded-full -top-5 object-cover"
-          alt=""
-        />
+        {!user.img && (
+          <p className="w-[35px] font-medium bg-neutral-400/40 dark:bg-neutral-500/90 grid place-items-center	 h-[35px] rounded-full  object-cover">
+            {user.name.charAt(0).toUpperCase()}
+          </p>
+        )}
+        {user.img && (
+          <img
+            src={user.img}
+            className="w-[35px] h-[35px] !z-50 rounded-full -top-5 object-cover"
+            alt={user.name}
+          />
+        )}
         <div>
           <p className="font-medium text-[15px] dark:text-neutral-100 text-neutral-800">
-            Patrick Hendrick
+            {user.name}
           </p>
           <span className="text-neutral-400 dark:text-neutral-500 text-sm">
             Hey I am available
