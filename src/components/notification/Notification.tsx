@@ -8,7 +8,7 @@ const Notification = ({ title }: { title: string }) => {
           <h1 className=" text-[21px] font-semibold">{title}</h1>
         </div>
       </div>
-      <div className="mt-10 px-[26px] max-h-[calc(100vh-100px)] overflow-y-auto mb-6">
+      <div className="mt-10 md:pb-0 pb-14 px-[26px] max-h-[calc(100vh-100px)] overflow-y-auto mb-6">
         {USERS.map((data) => (
           <NOTIFICATION data={data} />
         ))}
