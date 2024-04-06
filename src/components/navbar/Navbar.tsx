@@ -40,10 +40,15 @@ const Navbar = () => {
                       onClick={() => setCurrent(data.name)}
                       className={`${
                         current === data.name &&
-                        "dark:bg-neutral-600/60 bg-neutral-300 "
-                      } dark:hover:text-indigo-200 hover:bg-neutral-300 hover:dark:bg-neutral-700/60 py-4 rounded-[6px]`}
+                        "dark:bg-neutral-600/60 bg-neutral-300"
+                      } dark:hover:text-indigo-200 relative hover:bg-neutral-300 hover:dark:bg-neutral-700/60 py-4 rounded-[6px]`}
                       variant="ghost"
                     >
+                      {data.name === "Notification" && (
+                        <span className="absolute -top-2 right-0 min-h-7 min-w-7 max-h-7 text-xs max-w-7 grid place-items-center text-neutral-100 dark:bg-red-500 bg-red-400 rounded-full px-1">
+                          99+
+                        </span>
+                      )}
                       {data.icon}
                     </Button>
                   </TooltipTrigger>

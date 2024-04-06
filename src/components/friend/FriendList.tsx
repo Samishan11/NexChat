@@ -59,6 +59,7 @@ const UI = ({ user }: { user: IUser }) => {
           </p>
         ) : (
           <img
+            key={user.id}
             src={user.img}
             className="w-[35px] h-[35px]  rounded-full -top-5 object-cover"
             alt={user.name}
@@ -72,7 +73,10 @@ const UI = ({ user }: { user: IUser }) => {
         </div>
       </div>
       <div className="flex justify-center items-center">
-        <HiOutlineUserAdd className="text-indigo-500" size={20} />
+        <HiOutlineUserAdd
+          className="text-neutral-500 dark:text-neutral-200"
+          size={20}
+        />
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ const Profile = ({ title }: IProp) => {
           <h1 className=" text-[21px] font-semibold">My {title}</h1>
           <HiOutlineDotsVertical
             color=""
-            className="mt-1 text-neutral-500"
+            className="mt-1 text-neutral-500 dark:text-neutral-200"
             size={"18px"}
           />
         </div>
@@ -45,7 +45,9 @@ const Profile = ({ title }: IProp) => {
           <AccordionItem value="item-1">
             <AccordionTrigger className="font-normal">About</AccordionTrigger>
             <AccordionContent className="">
-              Yes. It adheres to the WAI-ARIA design pattern.
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla
+              aspernatur illum quia vel inventore totam excepturi sunt!
+              Laboriosam, ipsam aperiam.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">

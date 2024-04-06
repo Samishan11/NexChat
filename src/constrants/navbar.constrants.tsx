@@ -3,13 +3,14 @@ import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import { FiUsers } from "react-icons/fi";
 import { RiContactsLine } from "react-icons/ri";
 import { TbSettingsPause } from "react-icons/tb";
+import { IoMdNotificationsOutline } from "react-icons/io";
 
 export const NAVBARITEM = [
   {
     name: "Profile",
     icon: (
       <FaRegUser
-        className="text-neutral-500 dark:text-neutral-200 "
+        className="text-neutral-500 dark:text-neutral-200"
         size={"24px"}
       />
     ),
@@ -45,6 +46,15 @@ export const NAVBARITEM = [
     name: "Setting",
     icon: (
       <TbSettingsPause
+        className="text-neutral-500 dark:text-neutral-200"
+        size={"24px"}
+      />
+    ),
+  },
+  {
+    name: "Notification",
+    icon: (
+      <IoMdNotificationsOutline
         className="text-neutral-500 dark:text-neutral-200"
         size={"24px"}
       />
