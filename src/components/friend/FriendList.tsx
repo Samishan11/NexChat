@@ -34,7 +34,7 @@ const FriendList = ({ title }: IProp) => {
           />
         </div>
       </div>
-      <div className="px-6 pt-16 max-h-[calc(100vh-145px)] min-h-[calc(100vh-145px)] overflow-y-auto">
+      <div className="px-6 md:pb-0 pb-10 pt-16 max-h-[calc(100vh-145px)] min-h-[calc(100vh-145px)] overflow-y-auto">
         {filteredUsers.length > 0 ? (
           filteredUsers.map((user) => <UI user={user} />)
         ) : (

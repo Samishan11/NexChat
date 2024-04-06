@@ -29,7 +29,7 @@ const Contact = ({ title }: IProp) => {
           />
         </div>
       </div>
-      <div className=" px-10 pt-8  max-h-[calc(100vh-145px)] min-h-[calc(100vh-145px)] overflow-y-auto">
+      <div className=" px-10 pt-8 pb-8 md:pb-0   max-h-[calc(100vh-145px)] min-h-[calc(100vh-145px)] overflow-y-auto">
         {filteredUsers.length > 0 &&
           filteredUsers.map((user, index) => {
             const firstLetter = user.name.charAt(0).toUpperCase();
