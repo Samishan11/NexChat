@@ -4,6 +4,7 @@ import { FiUsers } from "react-icons/fi";
 import { RiContactsLine } from "react-icons/ri";
 import { TbSettingsPause } from "react-icons/tb";
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { RiUserAddLine } from "react-icons/ri";
 
 export const NAVBARITEM = [
   {
@@ -28,6 +29,15 @@ export const NAVBARITEM = [
     name: "Friends",
     icon: (
       <FiUsers
+        className="text-neutral-500 dark:text-neutral-200"
+        size={"24px"}
+      />
+    ),
+  },
+  {
+    name: "Create",
+    icon: (
+      <RiUserAddLine
         className="text-neutral-500 dark:text-neutral-200"
         size={"24px"}
       />

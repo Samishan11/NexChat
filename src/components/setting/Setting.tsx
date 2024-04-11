@@ -6,10 +6,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useAuthData } from "@/context/auth.context";
+import { getToken } from "@/service/token";
 interface IProp {
   title: string;
 }
 const Setting = ({ title }: IProp) => {
+  const { authData } = useAuthData();
+  const auth = getToken(authData);
   return (
     <div className="w-full h-auto sm:h-auto dark:text-neutral-200">
       <div className="px-[26px]">
@@ -27,7 +31,7 @@ const Setting = ({ title }: IProp) => {
             src="https://cdn.pixabay.com/photo/2022/07/24/23/46/artificial-intelligence-7342613_1280.jpg"
             alt=""
           />
-          <span className="font-medium">Admin</span>
+          <span className="font-medium">{auth.fullname}</span>
         </div>
       </div>
       <hr />

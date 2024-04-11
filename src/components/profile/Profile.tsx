@@ -7,10 +7,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useAuthData } from "@/context/auth.context";
+import { getToken } from "@/service/token";
 interface IProp {
   title: string;
 }
 const Profile = ({ title }: IProp) => {
+  const { authData } = useAuthData();
+  const auth = getToken(authData);
+  //
   return (
     <div className="w-full h-auto sm:h-auto dark:text-neutral-200">
       <div className="px-[26px]">
@@ -28,7 +33,7 @@ const Profile = ({ title }: IProp) => {
             src="https://cdn.pixabay.com/photo/2022/07/24/23/46/artificial-intelligence-7342613_1280.jpg"
             alt=""
           />
-          <span className="font-medium">Admin</span>
+          <span className="font-medium">{auth.fullname}</span>
           <div className="flex items-center gap-1">
             <RiRadioButtonLine size={14} className="text-green-500" />
             <span>active</span>
