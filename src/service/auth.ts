@@ -2,7 +2,6 @@ import { useMutation, useQuery } from "react-query";
 import Toast from "@/components/Toast";
 import { apiClient } from "./service.axios";
 import { setToken } from "./token";
-import { useNavigate } from "react-router-dom";
 import { useAuthData } from "../context/auth.context";
 
 const login = async ({ email, password }: any) => {
@@ -15,7 +14,6 @@ const login = async ({ email, password }: any) => {
 
 export const useLoginMutation = () => {
   const { setAuthData } = useAuthData();
-  const navigate = useNavigate();
   return useMutation({
     mutationFn: login,
     onSuccess: (response) => {
@@ -23,7 +21,7 @@ export const useLoginMutation = () => {
         setToken(response.data.token);
         setAuthData(response.data.token);
         Toast({ type: "success", message: "Login Sucessfully" });
-        navigate("/");
+        window.location.href = "/";
       } else {
         console.log("object");
         Toast({ type: "error", message: "Email or password not match." });
