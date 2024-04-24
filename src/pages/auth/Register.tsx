@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useRegisterMutation } from "@/service/auth";
+import { LoaderIcon } from "react-hot-toast";
 
 const Register = () => {
   const { register, handleSubmit } = useForm();
@@ -79,9 +80,13 @@ const Register = () => {
                 />
               </div>
               <button
+                disabled={registeruser.isLoading}
                 type="submit"
-                className="w-full text-white bg-indigo-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className={`${
+                  registeruser.isLoading ? "bg-indigo-300" : "bg-indigo-600"
+                } w-full flex items-center justify-center gap-3 text-white hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
               >
+                {registeruser.isLoading && <LoaderIcon className="w-4 h-4" />}
                 Sign up
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
