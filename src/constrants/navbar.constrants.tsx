@@ -26,7 +26,7 @@ export const NAVBARITEM = [
     ),
   },
   {
-    name: "Friends",
+    name: "Requests",
     icon: (
       <FiUsers
         className="text-neutral-500 dark:text-neutral-200"

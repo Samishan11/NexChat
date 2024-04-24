@@ -1,12 +1,14 @@
-import { HiOutlineUserAdd } from "react-icons/hi";
-import SearchableInput from "../form/SearchableInput";
 import { useState } from "react";
+import SearchableInput from "../form/SearchableInput";
 import { useAuthData } from "@/context/auth.context";
 import { getToken } from "@/service/token";
 import { Friend } from "../contact/Contact";
 import { LoadingSkeleton } from "../skeleton/Skeleton";
 import { Socket } from "socket.io-client";
 import Toast from "../Toast";
+import { baseURL } from "@/service/service.axios";
+import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
+import { useRemovePendingRequest } from "@/service/request";
 
 interface IProp {
   title: string;
@@ -30,12 +32,17 @@ const FriendList = ({ title, user, socket, isLoading }: IProp) => {
   const { authData } = useAuthData();
   const auth = getToken(authData);
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  //
+  const removePendingRequest = useRemovePendingRequest();
   //
   const data: Friend[] = user;
 
-  const filterUser = data.filter((user: Friend) =>
-    user.requestBy.fullname.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filterUser = data
+    .flatMap((user: Friend) => user)
+    .filter((user: Friend) =>
+      user.requestBy.fullname.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   const acceptRequest = (requestBy: any) => {
     if (!socket || !auth) return;
@@ -45,6 +52,10 @@ const FriendList = ({ title, user, socket, isLoading }: IProp) => {
     };
     socket.emit("accept-request", data);
     Toast({ type: "success", message: "Request accepted successfully" });
+  };
+
+  const rejectRequest = async (id: string) => {
+    await removePendingRequest.mutateAsync({ id });
   };
 
   if (isLoading)
@@ -68,7 +79,12 @@ const FriendList = ({ title, user, socket, isLoading }: IProp) => {
       <div className="px-6 md:pb-0 pb-10 pt-16 max-h-[calc(100vh-145px)] min-h-[calc(100vh-145px)] overflow-y-auto">
         {filterUser && filterUser.length > 0 ? (
           filterUser.map((user: Friend) => (
-            <UI handelClick={acceptRequest} key={user._id} user={user} />
+            <UI
+              handelReject={() => rejectRequest(user._id)}
+              handelClick={acceptRequest}
+              key={user._id}
+              user={user}
+            />
           ))
         ) : (
           <div className="flex">No users found.</div>
@@ -78,16 +94,16 @@ const FriendList = ({ title, user, socket, isLoading }: IProp) => {
   );
 };
 
-export function UI({ user, handelClick }: IUIProp) {
+export function UI({ user, handelClick, handelReject }: IUIProp) {
   return (
     <div
       style={{ borderRadius: "6px" }}
       className={`hover:dark:bg-neutral-800 hover:bg-neutral-300 mb-1 h-16 flex px-4 pt-2 items-center justify-between cursor-pointer `}
     >
       <div className="flex justify-between items-center gap-4">
-        {user && user.img ? (
+        {user && user.image ? (
           <img
-            src={user.img}
+            src={`${baseURL}/uploaded_images/${user?.image}`}
             className="w-[35px] h-[35px] rounded-full -top-5 object-cover"
             alt={user?.requestBy?.fullname}
           />
@@ -102,18 +118,26 @@ export function UI({ user, handelClick }: IUIProp) {
           </p>
         </div>
       </div>
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          handelClick(user?.requestBy._id as any);
-        }}
-        className="flex justify-center items-center"
-      >
-        <HiOutlineUserAdd
-          className="text-neutral-500 dark:text-neutral-200"
-          size={20}
-        />
-      </button>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            handelReject();
+          }}
+          className="flex justify-center items-center"
+        >
+          <CiCircleRemove className="text-red-600" size={20} />
+        </button>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            handelClick(user?.requestBy._id as any);
+          }}
+          className="flex justify-center items-center"
+        >
+          <CiCircleCheck className="text-green-600 " size={20} />
+        </button>
+      </div>
     </div>
   );
 }
@@ -121,6 +145,7 @@ export function UI({ user, handelClick }: IUIProp) {
 interface IUIProp {
   user?: Friend;
   handelClick: (data: string) => void;
+  handelReject: () => void;
 }
 
 export default FriendList;

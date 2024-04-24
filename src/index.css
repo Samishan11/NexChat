@@ -20,3 +20,21 @@
 .modal-container {
   filter: blur(0px) !important;
 }
+
+/*  */
+
+@keyframes borderAnimation {
+  0% {
+    border-width: 0px;
+  }
+  50% {
+    border-width: 4px;
+  }
+  100% {
+    border-width: 0px;
+  }
+}
+
+.animate-border {
+  animation: borderAnimation 1.5s ease-in-out infinite;
+}

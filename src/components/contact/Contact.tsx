@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import SearchableInput from "../form/SearchableInput";
-import { useListFriend } from "@/service/request";
+import { useListFriend, useRemoveFriend } from "@/service/request";
 import { useAuthData } from "@/context/auth.context";
 import { getToken } from "@/service/token";
 import { checkUser } from "@/utils/checkUser";
 import { LoadingSkeleton } from "../skeleton/Skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { FaTrash } from "react-icons/fa6";
 
 export interface User {
   _id: string;
@@ -16,9 +23,15 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   image: string;
+  bio: string;
 }
 
-export interface Friend {
+export interface IGroup {
+  users: any[];
+  groupName: string;
+}
+
+export interface Friend extends IGroup {
   _id: string;
   requestBy: User;
   requestTo: User;
@@ -27,9 +40,7 @@ export interface Friend {
   createdAt: string;
   updatedAt: string;
   roomId: string;
-  img: string;
-  groupName: string;
-  users: any[];
+  image: string;
   lastMessage: string;
 }
 
@@ -42,6 +53,11 @@ const Contact = ({ title }: IProp) => {
   const { authData } = useAuthData();
   const auth = getToken(authData);
   const { data: USERS, isLoading } = useListFriend(auth._id);
+  const removeFriend = useRemoveFriend();
+
+  const handelRemoveFriend = async (id: string, roomId: string) => {
+    await removeFriend.mutateAsync({ id, roomId });
+  };
 
   if (isLoading)
     return (
@@ -50,26 +66,34 @@ const Contact = ({ title }: IProp) => {
       </div>
     );
 
-  const filteredUsers: Friend[] = USERS.sort((a: Friend, b: Friend) => {
-    if (auth._id !== a.requestBy._id) {
-      if (a.requestBy.username < b.requestBy.username) {
-        return -1;
-      }
-      if (a.requestBy.username > b.requestBy.username) {
-        return 1;
-      }
-    } else {
-      if (a.requestTo.username < b.requestTo.username) {
-        return -1;
-      }
-      if (a.requestTo.username > b.requestTo.username) {
-        return 1;
-      }
-    }
-    return 0;
-  }).filter((user: Friend) =>
-    user.requestBy.username.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredUsers: Friend[] = USERS.sort((a: Friend, b: Friend) => {
+  //   if (auth._id !== a.requestBy._id) {
+  //     if (a.requestBy.fullname < b.requestBy.fullname) {
+  //       return -1;
+  //     }
+  //     if (a.requestBy.fullname > b.requestBy.fullname) {
+  //       return 1;
+  //     }
+  //   } else {
+  //     if (a.requestTo.fullname < b.requestTo.fullname) {
+  //       return -1;
+  //     }
+  //     if (a.requestTo.fullname > b.requestTo.fullname) {
+  //       return 1;
+  //     }
+  //   }
+  //   return 0;
+  // }).filter((user: Friend) =>
+  //   user.requestBy.fullname.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+
+  const filteredUsers: Friend[] = USERS.filter((user: Friend) =>
+    user.requestBy.fullname.toLowerCase().includes(searchTerm.toLowerCase())
+  ).sort((a: Friend, b: Friend) => {
+    const nameA = checkUser(auth._id, a).fullname.toUpperCase();
+    const nameB = checkUser(auth._id, b).fullname.toUpperCase();
+    return nameA.localeCompare(nameB);
+  });
 
   return (
     <div className="h-screen dark:text-neutral-100 overflow-hidden dark:bg-neutral-900 bg-neutral-200 border-r-2 dark:border-neutral-950 border-neutral-300 shadow">
@@ -86,17 +110,17 @@ const Contact = ({ title }: IProp) => {
         {!isLoading && filteredUsers && filteredUsers.length > 0 ? (
           filteredUsers.map((user: Friend, index: number) => {
             const firstLetter = checkUser(auth._id, user)
-              .username.charAt(0)
+              .fullname.charAt(0)
               .toUpperCase();
             const isFirstInGroup =
               index === 0 ||
               (auth._id === user.requestBy._id
-                ? user.requestTo.username.charAt(0).toUpperCase() !==
-                  filteredUsers[index - 1]?.requestTo?.username
+                ? user.requestTo.fullname.charAt(0).toUpperCase() !==
+                  filteredUsers[index - 1]?.requestTo?.fullname
                     .charAt(0)
                     .toUpperCase()
-                : user.requestBy.username.charAt(0).toUpperCase() !==
-                  filteredUsers[index - 1]?.requestBy?.username
+                : user.requestBy.fullname.charAt(0).toUpperCase() !==
+                  filteredUsers[index - 1]?.requestBy?.fullname
                     .charAt(0)
                     .toUpperCase());
             return (
@@ -108,9 +132,26 @@ const Contact = ({ title }: IProp) => {
                 )}
                 <div className="flex h-fit px-2 justify-between items-center">
                   <span className="font-medium  text-sm">
-                    {checkUser(auth._id, user).username}
+                    {checkUser(auth._id, user).fullname}
                   </span>
-                  <HiOutlineDotsHorizontal className="rotate-90" />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button>
+                        <HiOutlineDotsHorizontal className="rotate-90" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel
+                        onClick={() =>
+                          handelRemoveFriend(user._id, user.roomId)
+                        }
+                        className="flex cursor-pointer items-center gap-2 dark:bg-neutral-800 border-none"
+                      >
+                        <FaTrash size={14} />
+                        Remove
+                      </DropdownMenuLabel>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
             );

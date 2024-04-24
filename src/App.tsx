@@ -6,6 +6,7 @@ import io, { Socket } from "socket.io-client";
 import { jsonParser } from "@/utils/jsonParser";
 import { getToken } from "@/service/token";
 import { QueryClient, QueryClientProvider } from "react-query";
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -14,10 +15,13 @@ import {
   Navigate,
 } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { cn } from "./lib/utils";
+import { Spinner } from "@/icons/icon";
+import { apiClient, baseURL } from "@/service/service.axios";
+import Pagenotfount from "./pages/404";
 const Login = lazy(() => import("@/pages/auth/Login"));
 const Register = lazy(() => import("@/pages/auth/Register"));
 const Layout = lazy(() => import("@/layout/Layout"));
+
 export default function App() {
   const queryClient = new QueryClient();
   const user: AuthData = getToken();
@@ -25,16 +29,48 @@ export default function App() {
   const [authData, setAuthData] = React.useState<AuthData | null>(null);
   const token = jsonParser(localStorage.getItem("token") as string);
 
+  function Interceptor() {
+    apiClient.interceptors.request.use(
+      (request) => {
+        // Edit request config
+        return request;
+      },
+      (error) => {
+        console.log("error");
+        return Promise.reject(error);
+      }
+    );
+
+    apiClient.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      async (error) => {
+        console.error("Response Error:", "error response");
+
+        if (
+          error.response &&
+          error.response.status === 500 &&
+          error.response.data.message === "JWT verification failed"
+        ) {
+          window.location.href = "/login";
+        }
+        return Promise.reject(error);
+      }
+    );
+  }
+
+  Interceptor();
+
   //  hooks
   React.useEffect(() => {
     if (!user?._id) return;
-    const socket: Socket = io("https://api-chatting-app.onrender.com", {
+    const socket: Socket = io(baseURL, {
       query: {
         userId: user?._id,
       },
     });
     setSocket(socket);
-
     return () => {
       socket.disconnect();
     };
@@ -67,20 +103,7 @@ export default function App() {
                 <div className="flex justify-center items-center h-[100dvh]">
                   <div className="flex gap-2 items-center">
                     <span>Loading</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={30}
-                      height={30}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className={cn("animate-spin")}
-                    >
-                      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                    </svg>
+                    <Spinner />
                   </div>
                 </div>
               }
@@ -92,6 +115,7 @@ export default function App() {
                   </Route>
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
+                  <Route path="*" element={<Pagenotfount />} />
                 </Routes>
                 <Toaster position="bottom-right" reverseOrder={false} />
               </Router>

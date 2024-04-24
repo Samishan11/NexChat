@@ -1,7 +1,6 @@
 import { forwardRef, useRef, useState } from "react";
 import SearchableInput from "../form/SearchableInput";
 import { useUserQuery } from "@/service/auth";
-import Modal from "@/modal/Modal";
 import { useModalState } from "@/state/modal.state";
 import { Friend, User } from "../contact/Contact";
 import { HiOutlineUserAdd } from "react-icons/hi";
@@ -12,11 +11,12 @@ import { checkUser } from "@/utils/checkUser";
 import { LoadingSkeleton } from "../skeleton/Skeleton";
 import { Socket } from "socket.io-client";
 import Toast from "../Toast";
+import Modal from "../modal/Modal";
+import useImageCheckHook from "@/hooks/useImageCheckHook";
 interface IProp {
   title: string;
   socket: Socket | null;
 }
-
 interface IUser {
   _id: string;
   fullname: string;
@@ -97,7 +97,7 @@ const AddUser = ({ title, socket }: IProp) => {
           {data && (
             <button
               onClick={() => setOpen(!open)}
-              className="dark:bg-neutral-700/40 bg-neutral-300 mb-5 p-2 rounded-[8px]"
+              className="dark:bg-indigo-500/40 text-indigo-500 font-medium bg-neutral-300 mb-5 p-2 rounded-[8px]"
             >
               Create Group
             </button>
@@ -116,46 +116,65 @@ const AddUser = ({ title, socket }: IProp) => {
       <div className="px-6 md:pb-0 pb-10 max-h-[calc(100vh-145px)] min-h-[calc(100vh-145px)] overflow-y-auto">
         {filteredUsers && filteredUsers.length > 0 ? (
           filteredUsers.map((user: User) => (
-            <div
-              style={{ borderRadius: "6px" }}
-              className={`hover:dark:bg-neutral-800 hover:bg-neutral-300 mb-1 h-16 flex px-4 pt-2 items-center justify-between cursor-pointer `}
-            >
-              <div className="flex justify-between items-center gap-4">
-                {user && user.image ? (
-                  <img
-                    src={user.image}
-                    className="w-[35px] h-[35px] rounded-full -top-5 object-cover"
-                    alt={user.fullname}
-                  />
-                ) : (
-                  <p className="w-[35px] font-medium bg-neutral-400/40 grid place-items-center h-[35px] !z-50 rounded-full -top-5 object-cover">
-                    {user?.fullname?.slice(0, 1)}
-                  </p>
-                )}
-                <div>
-                  <p className="font-medium text-[15px] dark:text-neutral-100 text-neutral-800">
-                    {user?.fullname}
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  sendRequest(user._id);
-                }}
-                className="flex justify-center items-center"
-              >
-                <HiOutlineUserAdd
-                  className="text-neutral-500 dark:text-neutral-200"
-                  size={20}
-                />
-              </button>
-            </div>
+            <ListUser handelClick={sendRequest} user={user} />
           ))
         ) : (
           <div className="flex mt-6">No users found.</div>
         )}
       </div>
+    </div>
+  );
+};
+
+const ListUser = ({
+  user,
+  handelClick,
+}: {
+  user: any;
+  handelClick: (data: any) => void;
+}) => {
+  const { imageUrl } = useImageCheckHook(user.image);
+
+  return (
+    <div
+      key={user._id}
+      style={{ borderRadius: "6px" }}
+      className={`hover:dark:bg-neutral-800 hover:bg-neutral-300 mb-1 h-16 flex px-4 pt-2 items-center justify-between cursor-pointer `}
+    >
+      <div className="flex justify-between items-center gap-4">
+        {/* {user && user.image ? (
+        <img
+          src={`${baseURL}/uploaded_image/${user.image}`}
+          className="w-[35px] h-[35px] rounded-full -top-5 object-cover"
+        />
+      ) : (
+        <p className="w-[45px] font-medium text-indigo-500 bg-indigo-300/20 grid place-items-center h-[45px] !z-50 rounded-full -top-5 object-cover">
+          {user?.fullname?.slice(0, 1)}
+        </p>
+      )} */}
+        <img
+          src={imageUrl}
+          className="w-[35px] h-[35px] rounded-full -top-5 object-cover"
+        />
+
+        <div>
+          <p className="font-medium text-[15px] dark:text-neutral-100 text-neutral-800">
+            {user?.fullname}
+          </p>
+        </div>
+      </div>
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          handelClick(user._id);
+        }}
+        className="flex justify-center items-center"
+      >
+        <HiOutlineUserAdd
+          className="text-neutral-500 dark:text-neutral-200"
+          size={20}
+        />
+      </button>
     </div>
   );
 };
@@ -185,9 +204,10 @@ const GroupForm = forwardRef(({ data, auth, handelSubmit }: IPropForm, ref) => {
   return (
     <div className="">
       <form ref={ref as any} action="">
-        <div className="flex flex-col mb-3 gap-2">
+        <div className="flex flex-col mb-6 gap-2">
           <label htmlFor="">Group Name</label>
           <input
+            disabled={data?.length === 0}
             onChange={(e) => setText(e.target.value)}
             className="p-2 border border-indigo-500 focus:outline-indigo-500 rounded-[8px]"
             type="text"
@@ -195,25 +215,17 @@ const GroupForm = forwardRef(({ data, auth, handelSubmit }: IPropForm, ref) => {
             id=""
           />
         </div>
-        <div className={` mt-4 overflow-y-scroll`}>
+        <div className={` h-fit max-h-[calc(100%-120px)] overflow-y-scroll`}>
           {data.map((user) => (
             <div
               key={user._id}
               style={{ borderRadius: "6px" }}
-              className={`hover:dark:bg-neutral-800 hover:bg-neutral-300 mb-1 h-16 flex px-4 pt-2 items-center justify-between cursor-pointer `}
+              className={`hover:dark:bg-neutral-600 hover:bg-neutral-300 mb-1 h-16 flex px-4 pt-2 items-center justify-between cursor-pointer `}
             >
               <div className="flex justify-between items-center gap-4">
-                {user && checkUser(auth._id, user).image ? (
-                  <img
-                    src={checkUser(auth._id, user).image}
-                    className="w-[35px] h-[35px] rounded-full -top-5 object-cover"
-                    alt={checkUser(auth._id, user).username}
-                  />
-                ) : (
-                  <p className="w-[35px] font-medium bg-neutral-400/40 grid place-items-center h-[35px] !z-50 rounded-full -top-5 object-cover">
-                    {checkUser(auth._id, user).fullname?.slice(0, 1)}
-                  </p>
-                )}
+                <p className="w-[45px] text-indigo-500 font-medium bg-indigo-300/20 grid place-items-center	h-[45px] rounded-full object-cover">
+                  {checkUser(auth._id, user).fullname?.slice(0, 1)}
+                </p>
                 <div>
                   <p className="font-medium text-[15px] dark:text-neutral-100 text-neutral-800">
                     {checkUser(auth._id, user).fullname}
@@ -237,7 +249,7 @@ const GroupForm = forwardRef(({ data, auth, handelSubmit }: IPropForm, ref) => {
           ))}
         </div>
       </form>
-      <div className="flex absolute bottom-0 left-2/4 -translate-x-2/4 mt-2 justify-center gap-4 items-center">
+      <div className="flex  justify-center gap-4 items-center">
         <button
           onClick={() => setOpen(false)}
           className="bg-red-400 text-neutral-200 mb-5 py-2 px-4 rounded-[8px]"
@@ -245,6 +257,7 @@ const GroupForm = forwardRef(({ data, auth, handelSubmit }: IPropForm, ref) => {
           cancel
         </button>
         <button
+          disabled={data?.length === 0}
           onClick={() => handelSubmit(formData)}
           className="bg-indigo-500 text-neutral-200 mb-5 py-2 px-4 rounded-[8px]"
         >

@@ -13,7 +13,7 @@ import FriendList from "@/components/friend/FriendList";
 import Notification from "@/components/notification/Notification";
 import { useSocket } from "@/context/socket.context";
 import { useEffect, useState } from "react";
-import AddUser, { IGroup } from "@/components/adduser/AddUser";
+import AddUser from "@/components/adduser/AddUser";
 import { useAuthData } from "@/context/auth.context";
 import { getToken } from "@/service/token";
 import { useListRequest } from "@/service/request";
@@ -25,56 +25,56 @@ const Layout = () => {
   const { open } = useLayoutState();
   const { authData } = useAuthData();
   const auth = getToken(authData);
-
-  //
+  // states
   const [onlineUsers, setOnlineusers] = useState<Friend[]>([]);
   const [friendRequestLists, setRequest] = useState<Friend[]>([]);
-  const [groups, setGroups] = useState<IGroup[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [count, setCount] = useState<number>(0);
-
-  //
+  // list pending requests
   const { data: requestList, isLoading: isLoadingRequestList } = useListRequest(
     auth?._id
   );
+
+  // list notifications
   const { data, isLoading } = useListNotification(auth?._id);
 
-  //
+  // hooks for socket and set data
   useEffect(() => {
-    if (!socket) return;
-    socket.on("onlineUsers", (onlineUsers: any) => {
-      setOnlineusers(onlineUsers);
-    });
-    return () => {
-      socket.off("onlineUsers");
-    };
+    if (socket) {
+      socket.on("onlineUsers", (onlineUsers) => {
+        setOnlineusers(onlineUsers);
+      });
+      return () => {
+        socket.off("onlineUsers", () => {
+          setOnlineusers([]);
+        });
+      };
+    }
   }, [socket]);
-
+  //
   useEffect(() => {
     if (!requestList) return;
     setRequest(requestList);
   }, [requestList]);
-
+  //
   useEffect(() => {
     if (socket) {
-      const handelRequest = (data: any) => {
-        setRequest(data);
+      const handelRequest = (data: Friend) => {
+        setRequest((prev) => [...prev, data]);
       };
       socket.on("list-request", handelRequest);
-
       return () => {
-        socket.off("list-request");
+        socket.off("list-request", handelRequest);
       };
     }
   }, [socket]);
-
-  // effect hooks
+  // set notifications
   useEffect(() => {
     if (!data) return;
     setNotifications(data?.data);
     setCount(data?.count);
   }, [data]);
-
+  // set notifications
   useEffect(() => {
     if (socket) {
       const handleNotification = (notiData: any) => {
@@ -83,32 +83,22 @@ const Layout = () => {
         setNotifications((prev) => [...prev, notiData]);
         setCount(count + 1);
       };
-
       socket.on("get-notification", handleNotification);
-
       return () => {
         socket.off("get-notification", handleNotification);
       };
     }
   }, [socket, count]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on("list-new-group", (data: IGroup) => {
-        setGroups((prev) => [...prev, data]);
-      });
-    }
-  });
-
-  //
+  // handel componets state
   const COMPONENTS: { [key: string]: JSX.Element } = {
     Profile: <Profile title={current} />,
     Chat: (
-      <Chatlist groups={groups} onlineUsers={onlineUsers} title={current} />
+      <Chatlist socket={socket} onlineUsers={onlineUsers} title={current} />
     ),
     Contact: <Contact title={current} />,
     Setting: <Setting title={current} />,
-    Friends: (
+    Requests: (
       <FriendList
         isLoading={isLoadingRequestList}
         socket={socket}

@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import Logo from "@/assets/logo.svg";
 import {
   Tooltip,
@@ -13,6 +14,9 @@ import { FaSun } from "react-icons/fa6";
 import { useTheme } from "next-themes";
 import { useClearNotification } from "@/service/notification/notification";
 import { IoMdLogOut } from "react-icons/io";
+import { useListRequest } from "@/service/request";
+import { useAuthData } from "@/context/auth.context";
+import { getToken } from "@/service/token";
 
 interface IProp {
   count: number;
@@ -21,24 +25,26 @@ interface IProp {
 const Navbar = ({ count, notifications }: IProp) => {
   const { current, setCurrent } = useNavbarState();
   const { theme, setTheme } = useTheme();
-
+  const { authData } = useAuthData();
+  const auth = getToken(authData);
+  //  react query notification clear
   const clear = useClearNotification();
 
-  const handleClearNotification = (data: number[]) => {
-    clear.mutate(data);
-  };
+  const { data: requestList } = useListRequest(auth?._id);
 
   const notificationId = notifications?.map(
     (data: { _id: number }) => data?._id
   );
 
-  const handleClick = () => {
-    handleClearNotification(notificationId);
-  };
+  //  methods
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
+
+  const handleClick = useCallback(() => {
+    clear.mutate(notificationId);
+  }, [clear, notificationId]);
 
   const handelLogout = () => {
     localStorage.removeItem("token");
@@ -53,7 +59,7 @@ const Navbar = ({ count, notifications }: IProp) => {
         width={"30px"}
         alt=""
       />
-      <div className="mt-[6px] md:mt-[85px] md:block flex gap-2 md:gap-0 overflow-x-scroll">
+      <div className="mt-[6px] sm:pl-0 pl-2 md:mt-[85px] md:block flex gap-2 md:gap-0 overflow-x-scroll">
         {NAVBARITEM.map((data) => {
           return (
             <div key={data.name} className="md:mb-6">
@@ -72,10 +78,19 @@ const Navbar = ({ count, notifications }: IProp) => {
                       variant="ghost"
                     >
                       {count > 0 && data.name === "Notification" && (
-                        <span className="absolute -top-2 right-0 min-h-7 min-w-7 max-h-7 text-xs max-w-7 grid place-items-center text-neutral-100 dark:bg-red-500 bg-red-400 rounded-full px-1">
+                        <span className="absolute top-0 md:-top-2 right-0 min-h-7 min-w-7 max-h-7 text-xs max-w-7 grid place-items-center text-neutral-100 dark:bg-red-500 bg-red-400 rounded-full px-1">
                           {count > 9 ? `${count}+` : count}
                         </span>
                       )}
+                      {requestList &&
+                        requestList.length > 0 &&
+                        data.name === "Requests" && (
+                          <span className="absolute top-0 md:-top-2 right-0 min-h-7 min-w-7 max-h-7 text-xs max-w-7 grid place-items-center text-neutral-100 dark:bg-red-500 bg-red-400 rounded-full px-1">
+                            {requestList?.length > 9
+                              ? `${requestList?.length > 9 && 9}+`
+                              : requestList?.length}
+                          </span>
+                        )}
                       {data.icon}
                     </Button>
                   </TooltipTrigger>

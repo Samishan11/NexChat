@@ -3,9 +3,24 @@ import Toast from "@/components/Toast";
 import { apiClient } from "./service.axios";
 import { setToken } from "./token";
 import { useAuthData } from "../context/auth.context";
+import { useNavigate } from "react-router-dom";
+type IAuthData = {
+  username: string;
+  fullname: string;
+  email: string;
+  password: string;
+};
 
-const login = async ({ email, password }: any) => {
-  const response = await apiClient.post<any>("/login", {
+type TResponse = {
+  message: string;
+  data: IAuthData & { token: string };
+};
+
+const login = async ({
+  email,
+  password,
+}: Omit<IAuthData, "fullname" | "username">) => {
+  const response = await apiClient.post<string, any>("/login", {
     email,
     password,
   });
@@ -19,7 +34,7 @@ export const useLoginMutation = () => {
     onSuccess: (response) => {
       if (response.data.message === "User login sucessfully") {
         setToken(response.data.token);
-        setAuthData(response.data.token);
+        setAuthData(response.data.data);
         Toast({ type: "success", message: "Login Sucessfully" });
         window.location.href = "/";
       } else {
@@ -28,13 +43,13 @@ export const useLoginMutation = () => {
       }
     },
     onError: () => {
-      Toast({ type: "error", message: "Something ent wrong" });
+      Toast({ type: "error", message: "Something went wrong" });
     },
   });
 };
 
-const register = async ({ username, fullname, email, password }: any) => {
-  const response = await apiClient.post<any>("/register", {
+const register = async ({ username, fullname, email, password }: IAuthData) => {
+  const response = await apiClient.post<string, TResponse>("/register", {
     email,
     password,
     username,
@@ -45,14 +60,15 @@ const register = async ({ username, fullname, email, password }: any) => {
 };
 
 export const useRegisterMutation = () => {
+  const navigator = useNavigate();
   return useMutation({
     mutationFn: register,
     onSuccess: () => {
-      Toast({ type: "success", message: "User register sucessfully" });
-      // return response;
+      navigator("/login");
+      Toast({ type: "success", message: "User Register sucessfully" });
     },
     onError: () => {
-      Toast({ type: "error", message: "Something ent wrong" });
+      Toast({ type: "error", message: "Something went wrong" });
     },
   });
 };
@@ -71,5 +87,26 @@ const listUser = async () => {
 export const useUserQuery = () => {
   return useQuery(["users"], listUser, {
     select: (response) => response,
+  });
+};
+const updateProfile = async ({ id, data }: any) => {
+  const response = await apiClient.patch<any>(`/edit-profile/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response.data.data;
+};
+
+export const useUpdateProfileMutation = () => {
+  return useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => {
+      Toast({ type: "success", message: "Profile updated sucessfully" });
+    },
+    onError: () => {
+      Toast({ type: "error", message: "Something went wrong" });
+    },
   });
 };

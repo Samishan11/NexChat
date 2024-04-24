@@ -2,12 +2,20 @@ import { PiPhoneCall } from "react-icons/pi";
 import { CiVideoOn } from "react-icons/ci";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { FiSearch } from "react-icons/fi";
+import { FaRegUser } from "react-icons/fa";
 
 export const ICONS = [
-  { icon: <FiSearch size={20} className="text-neutral-500" /> },
-  { icon: <PiPhoneCall size={20} className="text-neutral-500" /> },
-  { icon: <CiVideoOn size={20} className="text-neutral-500" /> },
-  { icon: <HiOutlineDotsHorizontal size={20} className="text-neutral-500" /> },
+  { icon: <FaRegUser size={20} className="text-neutral-500" />, name: "user" },
+  { icon: <FiSearch size={20} className="text-neutral-500" />, name: "search" },
+  {
+    icon: <PiPhoneCall size={20} className="text-neutral-500" />,
+    name: "phone",
+  },
+  { icon: <CiVideoOn size={20} className="text-neutral-500" />, name: "video" },
+  {
+    icon: <HiOutlineDotsHorizontal size={20} className="text-neutral-500" />,
+    name: "dot",
+  },
 ];
 
 export const MESSAGES = [
