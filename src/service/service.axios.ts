@@ -1,6 +1,6 @@
 import axios from "axios";
 import { token } from "./token";
-export const baseURL = "https://api-chatting-app.onrender.com";
+export const baseURL = import.meta.env.VITE_BACKEND_URI;
 export const apiClient = axios.create({
   baseURL: `${baseURL}/api`,
   headers: {

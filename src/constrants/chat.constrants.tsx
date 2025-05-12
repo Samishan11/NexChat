@@ -9,7 +9,7 @@ export const ICONS = [
   { icon: <FiSearch size={20} className="text-neutral-500" />, name: "search" },
   {
     icon: <PiPhoneCall size={20} className="text-neutral-500" />,
-    name: "phone",
+    name: "call",
   },
   { icon: <CiVideoOn size={20} className="text-neutral-500" />, name: "video" },
   {

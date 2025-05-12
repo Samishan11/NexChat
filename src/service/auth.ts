@@ -42,8 +42,9 @@ export const useLoginMutation = () => {
         Toast({ type: "error", message: "Email or password not match." });
       }
     },
-    onError: () => {
-      Toast({ type: "error", message: "Something went wrong" });
+    onError: (error: any) => {
+      console.log(error);
+      Toast({ type: "error", message: error?.message });
     },
   });
 };

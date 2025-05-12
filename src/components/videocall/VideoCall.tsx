@@ -1,116 +1,166 @@
-// import { useEffect, useRef, useState } from "react";
-// import SimplePeer from "simple-peer";
-// import { Socket } from "socket.io-client";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { checkUser } from "@/utils/checkUser";
+import { Friend } from "../contact/Contact";
+import { Button } from "../ui/button";
+import React, { useEffect, useRef, useState } from "react";
+import { Socket } from "socket.io-client";
+import Peer from "peerjs";
+interface IProp {
+  isCalling: boolean;
+  accept: boolean;
+  userId: string;
+  auth: any;
+  data: Friend;
+  handelCall: () => void;
+  remoteVideoRef: React.RefObject<HTMLVideoElement>;
+  currentUserVideoRef: React.RefObject<HTMLVideoElement>;
+  socket: Socket | null;
+}
 
-// const VideoCall = ({ socket }: { socket: Socket | null }) => {
-//   const peer = useRef<SimplePeer.Instance | null>(null);
+const VideoCall = ({ auth, data, socket }: IProp) => {
+  const [isCalling, setIsCalling] = useState<boolean>(false);
+  const [accept, setAccept] = useState<boolean>(false);
+  const [userId, setUserid] = useState<string>("");
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const currentUserVideoRef = useRef<HTMLVideoElement>(null);
+  const peerInstance = useRef<any>(null);
+  const [peerId, setPeerId] = useState<string>("");
+  const [remotePeerId, setRemotePeerId] = useState<string>("");
 
-//   const localVideoRef = useRef<HTMLAudioElement | null>(null);
-//   const remoteVideoRef = useRef<HTMLAudioElement | null>(null);
-//   const [isConnected, setIsConnected] = useState(false);
+  //
 
-//   useEffect(() => {
-//     if (!socket) return;
-//     socket.on("offer", (data) => {
-//       // Handle incoming offer
-//       if (peer && peer.current) {
-//         peer.current = new SimplePeer({
-//           initiator: false,
-//           trickle: false,
-//         });
-//         peer.current.on("signal", (signal) => {
-//           // Send answer to the caller
-//           socket.emit("answer", {
-//             sender: data.sender,
-//             sdp: signal,
-//           });
-//         });
-//         peer.current.on("stream", (stream) => {
-//           if (remoteVideoRef && remoteVideoRef.current) {
-//             remoteVideoRef.current.srcObject = stream;
-//             setIsConnected(true);
-//           }
-//         });
-//         peer.current.signal(data.sdp);
-//         socket.on("answer", (data) => {
-//           if (peer && peer.current) {
-//             peer.current.signal(data.sdp);
-//           }
-//         });
+  const [socketId, setSocketId] = useState<{ id: string } | null>(null);
 
-//         // Handle incoming ICE candidate
-//         socket.on("icecandidate", (data) => {
-//           if (peer && peer.current) {
-//             (peer.current as any).addIceCandidate(data.candidate);
-//           }
-//         });
-//       }
-//     });
+  useEffect(() => {
+    if (socket) {
+      socket.on("joined_room", (data: any) => {
+        setSocketId(data);
+      });
+    }
+  }, [socket]);
 
-//     return () => {
-//       if (peer.current) {
-//         peer.current.destroy();
-//       }
-//       socket.disconnect();
-//     };
-//   }, [socket]);
+  //
+  useEffect(() => {
+    if (socket) {
+      socket.on("callUser", (data: any) => {
+        setIsCalling(true);
+        setUserid(data.userId);
+      });
+    }
+  }, [socket]);
 
-//   const startCall = async () => {
-//     if (!socket) return;
-//     // Get local media stream
-//     const stream = await navigator.mediaDevices.getUserMedia({
-//       video: false,
-//       audio: true,
-//     });
+  useEffect(() => {
+    const peer = new Peer();
+    peer.on("open", (id) => {
+      setPeerId(id);
+    });
 
-//     // Display local stream
-//     if (localVideoRef && localVideoRef.current) {
-//       localVideoRef.current.srcObject = stream;
-//     }
+    peer.on("call", (call) => {
+      const getUserMedia = navigator.mediaDevices.getUserMedia;
+      getUserMedia({ video: true, audio: true })
+        .then((mediaStream) => {
+          if (currentUserVideoRef.current) {
+            currentUserVideoRef.current.srcObject = mediaStream;
+            currentUserVideoRef.current.play();
+          }
 
-//     // Initialize SimplePeer as initiator
-//     peer.current = new SimplePeer({
-//       initiator: true,
-//       trickle: false,
-//       stream: stream,
-//     });
+          call.answer(mediaStream);
 
-//     peer.current.on("signal", (signal) => {
-//       // Send offer to the callee
-//       socket.emit("offer", {
-//         recipient: "recipientSocketId",
-//         sdp: signal,
-//       });
-//     });
+          call.on("stream", function (remoteStream) {
+            if (remoteVideoRef.current) {
+              remoteVideoRef.current.srcObject = remoteStream;
+              remoteVideoRef.current.play();
+            }
+          });
+        })
+        .catch((e) => console.log(e));
+    });
 
-//     peer.current.on("stream", (remoteStream) => {
-//       // Display remote stream
-//       if (remoteVideoRef && remoteVideoRef.current) {
-//         remoteVideoRef.current.srcObject = remoteStream;
-//         setIsConnected(true);
-//       }
-//     });
+    peerInstance.current = peer;
+  }, []);
 
-//     peer.current.on("error", (err) => {
-//       console.error("Peer error:", err);
-//     });
-//   };
+  React.useEffect(() => {
+    if (!remotePeerId) return;
+    const getUserMedia = navigator.mediaDevices.getUserMedia;
+    getUserMedia({ video: true, audio: true })
+      .then((mediaStream) => {
+        if (currentUserVideoRef.current) {
+          currentUserVideoRef.current.srcObject = mediaStream;
+          currentUserVideoRef.current.play();
+        }
+        if (peerInstance.current) {
+          const call = peerInstance.current.call(remotePeerId, mediaStream);
+          call.on("stream", (remoteStream: any) => {
+            if (remoteVideoRef.current) {
+              remoteVideoRef.current.srcObject = remoteStream;
+              remoteVideoRef.current.play();
+            }
+          });
+        }
+      })
+      .catch((e) => console.log(e));
+  }, [remotePeerId]);
 
-//   const endCall = () => {
-//     if (peer.current) {
-//       peer.current.destroy();
-//       setIsConnected(false);
-//     }
-//   };
+  const handleCallAccept = () => {
+    if (socket) {
+      socket.emit("answerCall", {
+        roomId: data.roomId,
+        userId: checkUser(auth._id, data as Friend)._id,
+        peerId: peerId,
+      });
+    }
+  };
 
-//   return (
-//     <div>
-//       <audio ref={localVideoRef} autoPlay muted></audio>
-//       <audio ref={remoteVideoRef} autoPlay></audio>
-//       {!isConnected && <button onClick={startCall}>Start Call</button>}
-//       {isConnected && <button onClick={endCall}>End Call</button>}
-//     </div>
-//   );
-// };
+  useEffect(() => {
+    if (socket) {
+      socket.on("callAccepted", (data) => {
+        console.log(data);
+        setAccept(data.accept);
+        setRemotePeerId(data.peerId);
+      });
+    }
+  }, [socket, accept]);
 
-// export default VideoCall;
+  return (
+    <Dialog open={isCalling}>
+      <DialogContent className="sm:max-w-[425px]">
+        <pre>My ID: {socketId?.id}</pre>
+        <DialogHeader>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>
+            {!accept && (
+              <p>
+                {userId === auth._id ? "Incoming call " : "Calling to "}
+                {checkUser(auth._id, data).fullname}{" "}
+              </p>
+            )}
+            {userId === auth._id && !accept && (
+              <Button onClick={handleCallAccept} variant="outline">
+                Accept
+              </Button>
+            )}
+            <div>
+              <video ref={currentUserVideoRef} />
+            </div>
+            <div>
+              <video ref={remoteVideoRef} />
+            </div>
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">{accept && <video />}</div>
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default VideoCall;

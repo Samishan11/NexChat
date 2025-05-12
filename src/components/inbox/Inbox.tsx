@@ -1,6 +1,6 @@
 import { FaFile, FaPaperPlane } from "react-icons/fa6";
 import { Button } from "../ui/button";
-import { MdArrowBackIos } from "react-icons/md";
+// import { MdArrowBackIos } from "react-icons/md";
 import { useLayoutState } from "@/state/layout.state";
 import { IoTriangle } from "react-icons/io5";
 import { Socket } from "socket.io-client";
@@ -13,15 +13,16 @@ import moment from "moment";
 import { Friend, User } from "../contact/Contact";
 import message from "@/assets/mp3/message.mp3";
 import typing from "@/assets/mp3/typing.mp3";
-import { IGroup } from "../adduser/AddUser";
+// import { IGroup } from "../adduser/AddUser";
 import { BsDownload, BsXCircleFill } from "react-icons/bs";
 import { useScrollToBottom } from "@/hooks/useScrollToBottom";
 import { LoadingSkeleton } from "../skeleton/Skeleton";
 import { baseURL } from "@/service/service.axios";
-import { ICONS } from "@/constrants/chat.constrants";
+// import { ICONS } from "@/constrants/chat.constrants";
 import Detail from "./Detail";
 import { handleDownload } from "@/utils/imageDownloader";
-import useImageCheckHook from "@/hooks/useImageCheckHook";
+// import useImageCheckHook from "@/hooks/useImageCheckHook";
+import Header from "./Header";
 
 interface IProp {
   socket: Socket | null;
@@ -179,6 +180,7 @@ const Inbox = ({ socket }: IProp) => {
         }`}
       >
         <Header
+          socket={socket}
           handelOpenDetail={handelOpenDetail}
           auth={auth}
           data={data as Friend}
@@ -219,52 +221,401 @@ const Inbox = ({ socket }: IProp) => {
   );
 };
 
-const Header = ({
-  handelOpenDetail,
-  data,
-  auth,
-}: {
-  handelOpenDetail: () => void;
-  data: Friend | IGroup;
-  auth: any;
-}) => {
-  const { setOpen } = useLayoutState();
+// const Header = ({
+//   handelOpenDetail,
+//   data,
+//   auth,
+//   socket,
+// }: {
+//   handelOpenDetail: () => void;
+//   data: Friend | IGroup;
+//   auth: any;
+//   socket: Socket | any;
+// }) => {
+//   const { setOpen } = useLayoutState();
+//   const { imageUrl } = useImageCheckHook(
+//     checkUser(auth._id, data as Friend)?.image
+//   );
 
-  const { imageUrl } = useImageCheckHook(
-    checkUser(auth._id, data as Friend)?.image
-  );
+//   // Call states
+//   const [calling, setCalling] = useState(false);
+//   const [incomingCall, setIncomingCall] = useState(false);
+//   const [callerId, setCallerId] = useState<string | null>(null);
+//   const [callStatus, setCallStatus] = useState<
+//     "idle" | "connecting" | "connected" | "ended"
+//   >("idle");
 
-  return (
-    <div className="border-b dark:border-neutral-700 border-neutral-200 flex justify-between gap-10 items-center h-20 px-6">
-      <div className="flex gap-4 items-center justify-center">
-        <MdArrowBackIos
-          onClick={() => setOpen(false)}
-          className="md:hidden block"
-        />
-        <img className="w-10 rounded-full" src={imageUrl} alt="" />
-        <div className="">
-          <p className="font-medium">
-            {data.groupName
-              ? data.groupName
-              : checkUser(auth._id, data as Friend).fullname}
-          </p>
-          {/* <small className="font-thin block">5 min ago</small> */}
-          {/* <FaDotCircle size={10} className="text-green-500" /> */}
-        </div>
-      </div>
-      <div className="flex gap-6 items-start">
-        {ICONS.map((item, ind) => (
-          <div
-            key={ind}
-            onClick={item.name === "user" ? handelOpenDetail : undefined}
-          >
-            {item.icon}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+//   // Refs
+//   const localAudioRef = useRef<HTMLAudioElement>(null);
+//   const remoteAudioRef = useRef<HTMLAudioElement>(null);
+//   const peerConnection = useRef<RTCPeerConnection | null>(null);
+//   const localStreamRef = useRef<MediaStream | null>(null);
+
+//   // Clean up function to end call and release resources
+//   const cleanupCall = useCallback(() => {
+//     if (localStreamRef.current) {
+//       localStreamRef.current.getTracks().forEach((track) => track.stop());
+//       localStreamRef.current = null;
+//     }
+
+//     if (peerConnection.current) {
+//       peerConnection.current.close();
+//       peerConnection.current = null;
+//     }
+
+//     setCalling(false);
+//     setIncomingCall(false);
+//     setCallStatus("idle");
+//     setCallerId(null);
+//   }, []);
+
+//   // Setup WebRTC connection with proper ICE servers
+//   const setupConnection = useCallback(() => {
+//     // Configure with STUN/TURN servers for NAT traversal
+//     const configuration = {
+//       iceServers: [
+//         { urls: "stun:stun.l.google.com:19302" },
+//         { urls: "stun:stun1.l.google.com:19302" },
+//         // Add TURN servers in production for fallback
+//       ],
+//     };
+
+//     peerConnection.current = new RTCPeerConnection(configuration);
+
+//     // Handle ICE candidates
+//     peerConnection.current.onicecandidate = (e) => {
+//       if (e.candidate) {
+//         socket.emit("ice_candidate", {
+//           roomId: data.roomId,
+//           candidate: e.candidate,
+//         });
+//       }
+//     };
+
+//     // Handle connection state changes
+//     peerConnection.current.onconnectionstatechange = () => {
+//       if (peerConnection.current) {
+//         switch (peerConnection.current.connectionState) {
+//           case "connected":
+//             setCallStatus("connected");
+//             break;
+//           case "disconnected":
+//           case "failed":
+//             cleanupCall();
+//             break;
+//         }
+//       }
+//     };
+
+//     // Handle incoming audio streams
+//     peerConnection.current.ontrack = (e) => {
+//       if (remoteAudioRef.current && e.streams[0]) {
+//         remoteAudioRef.current.srcObject = e.streams[0];
+//         remoteAudioRef.current
+//           .play()
+//           .catch((err) => console.error("Error playing audio:", err));
+//       }
+//     };
+//   }, [data.roomId, socket, cleanupCall]);
+
+//   // Initialize media and start a call
+//   const handleStartCall = useCallback(async () => {
+//     try {
+//       setCalling(true);
+//       setCallStatus("connecting");
+//       setupConnection();
+
+//       const mediaConstraints = { audio: true, video: false };
+//       const localStream = await navigator.mediaDevices.getUserMedia(
+//         mediaConstraints
+//       );
+//       localStreamRef.current = localStream;
+
+//       // Display local audio stream
+//       if (localAudioRef.current) {
+//         localAudioRef.current.srcObject = localStream;
+//         localAudioRef.current
+//           .play()
+//           .catch((err) => console.error("Error playing audio:", err));
+//       }
+
+//       // Add tracks to peer connection
+//       localStream.getTracks().forEach((track) => {
+//         peerConnection.current?.addTrack(track, localStream);
+//       });
+
+//       // Create offer
+//       const offer = await peerConnection.current?.createOffer({
+//         offerToReceiveAudio: true,
+//         offerToReceiveVideo: false,
+//       });
+
+//       if (!peerConnection.current || !offer) {
+//         throw new Error("Failed to create offer");
+//       }
+
+//       await peerConnection.current.setLocalDescription(offer);
+
+//       // Send offer to remote peer
+//       socket.emit("offer", {
+//         roomId: data.roomId,
+//         offer: offer,
+//         callerId: auth._id,
+//         callerName: auth.fullname || auth.username,
+//       });
+
+//       // Set timeout for no answer
+//       setTimeout(() => {
+//         if (callStatus === "connecting") {
+//           alert("No answer. Call ended.");
+//           cleanupCall();
+//         }
+//       }, 30000); // 30 seconds timeout
+//     } catch (err) {
+//       console.error("Error starting call:", err);
+//       alert("Failed to start call. Please check your microphone permissions.");
+//       cleanupCall();
+//     }
+//   }, [auth, data.roomId, setupConnection, socket, callStatus, cleanupCall]);
+
+//   // Handle incoming call offer
+//   const handleReceiveOffer = useCallback(
+//     async (data: any) => {
+//       try {
+//         const { offer, callerId, callerName } = data;
+//         setIncomingCall(true);
+//         setCallerId(callerId);
+
+//         // Show UI for incoming call
+//         const acceptCall = window.confirm(
+//           `Incoming call from ${callerName}. Accept?`
+//         );
+
+//         if (acceptCall) {
+//           setCalling(true);
+//           setCallStatus("connecting");
+//           setupConnection();
+
+//           // Get local media stream
+//           const mediaConstraints = { audio: true, video: false };
+//           const localStream = await navigator.mediaDevices.getUserMedia(
+//             mediaConstraints
+//           );
+//           localStreamRef.current = localStream;
+
+//           if (localAudioRef.current) {
+//             localAudioRef.current.srcObject = localStream;
+//             localAudioRef.current
+//               .play()
+//               .catch((err) => console.error("Error playing audio:", err));
+//           }
+
+//           // Add tracks to peer connection
+//           localStream.getTracks().forEach((track) => {
+//             peerConnection.current?.addTrack(track, localStream);
+//           });
+
+//           // Set remote description (the offer)
+//           await peerConnection.current?.setRemoteDescription(
+//             new RTCSessionDescription(offer)
+//           );
+
+//           // Create answer
+//           const answer = await peerConnection.current?.createAnswer();
+//           if (!answer || !peerConnection.current) {
+//             throw new Error("Failed to create answer");
+//           }
+
+//           await peerConnection.current.setLocalDescription(answer);
+
+//           // Send answer back
+//           socket.emit("answer", {
+//             roomId: data.roomId,
+//             answer: answer,
+//             targetId: callerId,
+//           });
+//         } else {
+//           // Decline call
+//           socket.emit("call_rejected", {
+//             roomId: data.roomId,
+//             targetId: callerId,
+//           });
+//           setIncomingCall(false);
+//           setCallerId(null);
+//         }
+//       } catch (err) {
+//         console.error("Error handling incoming call:", err);
+//         alert(
+//           "Failed to answer call. Please check your microphone permissions."
+//         );
+//         cleanupCall();
+//       }
+//     },
+//     [setupConnection, socket, cleanupCall]
+//   );
+
+//   // Handle received answer
+//   const handleReceiveAnswer = useCallback(
+//     async (data: any) => {
+//       try {
+//         const { answer } = data;
+//         if (
+//           peerConnection.current &&
+//           peerConnection.current.signalingState !== "closed"
+//         ) {
+//           await peerConnection.current.setRemoteDescription(
+//             new RTCSessionDescription(answer)
+//           );
+//         }
+//       } catch (err) {
+//         console.error("Error setting remote description:", err);
+//         cleanupCall();
+//       }
+//     },
+//     [cleanupCall]
+//   );
+
+//   // Handle ICE candidate
+//   const handleNewICECandidate = useCallback(async (candidate: any) => {
+//     try {
+//       if (peerConnection.current && peerConnection.current.remoteDescription) {
+//         await peerConnection.current.addIceCandidate(
+//           new RTCIceCandidate(candidate)
+//         );
+//       } else {
+//         // Queue candidates until remote description is set
+//         console.log("Received ICE candidate before remote description is set");
+//       }
+//     } catch (err) {
+//       console.error("Failed to add ICE candidate:", err);
+//     }
+//   }, []);
+
+//   // Handle call rejection
+//   const handleCallRejected = useCallback(() => {
+//     alert("Call was rejected.");
+//     cleanupCall();
+//   }, [cleanupCall]);
+
+//   // End ongoing call
+//   const endCall = useCallback(() => {
+//     socket.emit("end_call", {
+//       roomId: data.roomId,
+//       targetId: callerId,
+//     });
+//     cleanupCall();
+//   }, [socket, data.roomId, callerId, cleanupCall]);
+
+//   // Setup event listeners
+//   useEffect(() => {
+//     if (socket) {
+//       socket.on("receive_offer", handleReceiveOffer);
+//       socket.on("receive_answer", handleReceiveAnswer);
+//       socket.on("receive_candidate", handleNewICECandidate);
+//       socket.on("call_rejected", handleCallRejected);
+//       socket.on("call_ended", cleanupCall);
+
+//       return () => {
+//         socket.off("receive_offer");
+//         socket.off("receive_answer");
+//         socket.off("receive_candidate");
+//         socket.off("call_rejected");
+//         socket.off("call_ended");
+//       };
+//     }
+//   }, [
+//     socket,
+//     handleReceiveOffer,
+//     handleReceiveAnswer,
+//     handleNewICECandidate,
+//     handleCallRejected,
+//     cleanupCall,
+//   ]);
+
+//   // Audio elements for the call
+//   const renderAudioElements = () => (
+//     <>
+//       <audio ref={localAudioRef} autoPlay muted />
+//       <audio ref={remoteAudioRef} autoPlay />
+//     </>
+//   );
+
+//   // Call UI
+//   const renderCallUI = () => {
+//     if (calling) {
+//       return (
+//         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+//           <div className="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-lg w-80">
+//             <h3 className="text-lg font-medium mb-4">
+//               {callStatus === "connecting" ? "Connecting..." : "In Call"}
+//             </h3>
+//             <p className="mb-4">
+//               {callStatus === "connecting"
+//                 ? "Establishing connection..."
+//                 : `Call connected with ${
+//                     checkUser(auth._id, data as Friend).fullname
+//                   }`}
+//             </p>
+//             <button
+//               onClick={endCall}
+//               className="w-full bg-red-500 text-white py-2 rounded-md hover:bg-red-600"
+//             >
+//               End Call
+//             </button>
+//           </div>
+//         </div>
+//       );
+//     }
+//     return null;
+//   };
+
+//   return (
+//     <>
+//       {renderAudioElements()}
+//       {renderCallUI()}
+
+//       <div className="border-b dark:border-neutral-700 border-neutral-200 flex justify-between gap-10 items-center h-20 px-6">
+//         <div className="flex gap-4 items-center justify-center">
+//           <MdArrowBackIos
+//             onClick={() => setOpen(false)}
+//             className="md:hidden block"
+//           />
+//           <img className="w-10 rounded-full" src={imageUrl} alt="" />
+//           <div className="">
+//             <p className="font-medium">
+//               {data.groupName
+//                 ? data.groupName
+//                 : checkUser(auth._id, data as Friend).fullname}
+//             </p>
+//             {/* Show online status or last seen time */}
+//           </div>
+//         </div>
+//         <div className="flex gap-6 items-start">
+//           {ICONS.map((item, ind) => (
+//             <div
+//               key={ind}
+//               onClick={
+//                 item.name === "user"
+//                   ? handelOpenDetail
+//                   : item.name === "call" && !calling
+//                   ? handleStartCall
+//                   : undefined
+//               }
+//               className={`${
+//                 calling && item.name === "call"
+//                   ? "opacity-50 cursor-not-allowed"
+//                   : "cursor-pointer"
+//               }`}
+//             >
+//               {item.icon}
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </>
+//   );
+// };
+
 const Body = ({
   auth,
   messages,
@@ -281,6 +632,8 @@ const Body = ({
 
   return (
     <div className="max-h-[calc(100vh-180px)] min-h-[calc(100vh-180px)] p-6 overflow-y-scroll">
+      {/* <VideoCall /> */}
+
       {messages.map((chat) => (
         <div key={chat._id}>
           <div

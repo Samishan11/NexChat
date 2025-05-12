@@ -271,7 +271,7 @@ const ListItem = ({ data, auth }: { ind: number; data: any; auth: any }) => {
           <p className="font-medium text-[15px] dark:text-neutral-200 text-neutral-800">
             {data.groupName
               ? data.groupName
-              : checkUser(auth._id, data).fullname}
+              : checkUser(auth._id, data)?.fullname}
           </p>
           <span
             className="text-neutral-500 overflow-hidden truncate text-ellipsis block max-w-[200px] dark:text-neutral-500 text-sm"
